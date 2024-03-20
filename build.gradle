@@ -1,14 +1,15 @@
 plugins {
     id "java"
-    id "idea"
-
-    // Spring is so complicated it has gradle plugins to manage all of the sub-dependencies
-    id "org.springframework.boot" version "2.7.10"
-    id "io.spring.dependency-management" version "1.0.15.RELEASE"
+    id 'org.springframework.boot' version '3.2.3'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+apply plugin: 'io.spring.dependency-management'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 repositories {
     mavenCentral()
