@@ -64,10 +64,12 @@ public class StatusController {
         Logger logger = LoggerFactory.getLogger("StatusController");
         logger.info("Details were provided: " + Arrays.toString(details.toArray()));
 
-        // Step 1: Start with base status
+
+        SystemStatusProvider facade = new SystemStatusFacade();
+        AvailableProcessorsDetail.setProvider(facade);
         StatusDetail status = new BaseServerStatus();
 
-        // Step 2: Add decorators based on requested details
+
         for (String detail : details) {
             switch (detail) {
                 case "availableProcessors":
@@ -78,7 +80,7 @@ public class StatusController {
             }
         }
 
-        // Step 3: Return updated ServerStatus
+
         return new ServerStatus(
                 counter.incrementAndGet(),
                 String.format(template, name),
