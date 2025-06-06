@@ -1,6 +1,7 @@
 package com.acme.statusmgr;
 
 import com.acme.statusmgr.beans.ServerStatus;
+import com.acme.statusmgr.details.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -59,16 +62,47 @@ public class StatusController {
             @RequestParam(value = "name", defaultValue = "Anonymous") String name,
             @RequestParam List<String> details) {
 
-        ServerStatus detailedStatus = null;
-
-        if (details != null) {
-            Logger logger = LoggerFactory.getLogger("StatusController");
-            logger.info("Details were provided: " + Arrays.toString(details.toArray()));
-
-            //todo Should do something with all these details that were requested
+        Logger logger = LoggerFactory.getLogger("StatusController");
+        logger.info("Details were provided: " + Arrays.toString(details.toArray()));
 
 
+
+        /*
+        StatusDetail status = new BaseServerStatus();
+
+
+        Set<String> addedDetails = new HashSet<>();
+        for (String detail : details) {
+            boolean isRepeated = !addedDetails.add(detail);
+            switch (detail) {
+                case "availableProcessors":
+                    status = new AvailableProcessorsDetail(status, isRepeated);
+                    break;
+                case "freeJVMMemory":
+                    status = new FreeJVMMemoryDetail(status, isRepeated);
+                    break;
+                case "totalJVMMemory":
+                    status = new TotalJVMMemoryDetail(status, isRepeated);
+                    break;
+                case "jreVersion":
+                    status = new JreVersionDetail(status, isRepeated);
+                    break;
+                case "tempLocation":
+                    status = new TempLocationDetail(status, isRepeated);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid details option: " + detail);
+            }
         }
-        return detailedStatus; //todo shouldn't just return null
+        */
+        StatusDetail status = ServerStatusFactory.buildStatusDetailChain(details);
+
+
+        return new ServerStatus(
+                counter.incrementAndGet(),
+                String.format(template, name),
+                status.getStatusDesc(),
+                status.getRequestCost()
+        );
     }
 }

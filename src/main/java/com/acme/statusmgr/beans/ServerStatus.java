@@ -11,7 +11,8 @@ public class ServerStatus {
     /**
      * requestCost constant will have to be changed if we change costs or calc dynamically
      */
-    private final Integer requestCost = 1;  // the cost in pennies of this request.
+    private Integer requestCost;  // the cost in pennies of this request.
+    private String statusDesc;
 
     /**
      * Construct a ServerStatus using info passed in for identification.
@@ -23,11 +24,18 @@ public class ServerStatus {
     public ServerStatus(long id, String contentHeader) {
         this.id = id;
         this.contentHeader = contentHeader;
+        this.statusDesc = "Server is " + ServerManager.getCurrentServerStatus(); // default
+        this.requestCost = 1; // default cost
     }
 
-    public ServerStatus() {
 
+    public ServerStatus(long id, String contentHeader, String statusDesc, Integer requestCost) {
+        this.id = id;
+        this.contentHeader = contentHeader;
+        this.statusDesc = statusDesc;
+        this.requestCost = requestCost;
     }
+
 
     /**
      * get the id of this request
@@ -55,7 +63,7 @@ public class ServerStatus {
      */
     public String getStatusDesc() {
         // Obtain current status of server
-        return "Server is " + ServerManager.getCurrentServerStatus();
+        return statusDesc;
     }
 
     /**
