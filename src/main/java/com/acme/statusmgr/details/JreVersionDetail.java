@@ -27,6 +27,6 @@ public class JreVersionDetail implements StatusDetail {
 
     @Override
     public int getRequestCost() {
-        return inner.getRequestCost() + (isRepeated ? 10 : 20);
+        return inner.getRequestCost() + (isRepeated ? 18 : 19);
     }
 }

@@ -27,6 +27,6 @@ public class TotalJVMMemoryDetail implements StatusDetail {
 
     @Override
     public int getRequestCost() {
-        return inner.getRequestCost() + (isRepeated ? 7 : 14);
+        return inner.getRequestCost() + (isRepeated ? 12 : 13);
     }
 }

@@ -25,7 +25,7 @@ public class AvailableProcessorsDetail implements StatusDetail {
 
     @Override
     public int getRequestCost() {
-        return inner.getRequestCost() + (isRepeated ? 2 : 4);
+        return inner.getRequestCost() + (isRepeated ? 2 : 3);
     }
 }
 

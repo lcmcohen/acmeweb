@@ -27,6 +27,6 @@ public class TempLocationDetail implements StatusDetail {
 
     @Override
     public int getRequestCost() {
-        return inner.getRequestCost() + (isRepeated ? 15 : 30);
+        return inner.getRequestCost() + (isRepeated ? 28 : 29);
     }
 }

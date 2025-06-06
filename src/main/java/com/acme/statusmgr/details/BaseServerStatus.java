@@ -12,6 +12,6 @@ public class BaseServerStatus implements StatusDetail {
 
     @Override
     public int getRequestCost() {
-        return 0;
+        return 1;
     }
 }

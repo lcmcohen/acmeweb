@@ -1,6 +1,8 @@
 package com.acme.statusmgr;
 
 import com.acme.statusmgr.details.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +42,9 @@ public class ServerStatusFactory {
                     baseStatus = new TempLocationDetail(baseStatus, isRepeated);
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid details option: " + detail);
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Invalid details option: " + detail
+                    );
             }
         }
 

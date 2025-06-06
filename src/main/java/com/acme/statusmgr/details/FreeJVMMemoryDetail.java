@@ -27,6 +27,6 @@ public class FreeJVMMemoryDetail implements StatusDetail {
 
     @Override
     public int getRequestCost() {
-        return inner.getRequestCost() + (isRepeated ? 7 : 8);
+        return inner.getRequestCost() + 7;
     }
 }
