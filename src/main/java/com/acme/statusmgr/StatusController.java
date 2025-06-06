@@ -1,6 +1,8 @@
 package com.acme.statusmgr;
 
 import com.acme.statusmgr.beans.ServerStatus;
+import com.acme.statusmgr.details.AvailableProcessorsDetail;
+import com.acme.statusmgr.details.BaseServerStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,16 +61,29 @@ public class StatusController {
             @RequestParam(value = "name", defaultValue = "Anonymous") String name,
             @RequestParam List<String> details) {
 
-        ServerStatus detailedStatus = null;
+        Logger logger = LoggerFactory.getLogger("StatusController");
+        logger.info("Details were provided: " + Arrays.toString(details.toArray()));
 
-        if (details != null) {
-            Logger logger = LoggerFactory.getLogger("StatusController");
-            logger.info("Details were provided: " + Arrays.toString(details.toArray()));
+        // Step 1: Start with base status
+        StatusDetail status = new BaseServerStatus();
 
-            //todo Should do something with all these details that were requested
-
-
+        // Step 2: Add decorators based on requested details
+        for (String detail : details) {
+            switch (detail) {
+                case "availableProcessors":
+                    status = new AvailableProcessorsDetail(status);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid detail: " + detail);
+            }
         }
-        return detailedStatus; //todo shouldn't just return null
+
+        // Step 3: Return updated ServerStatus
+        return new ServerStatus(
+                counter.incrementAndGet(),
+                String.format(template, name),
+                status.getStatusDesc(),
+                status.getRequestCost()
+        );
     }
 }
