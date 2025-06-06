@@ -6,5 +6,5 @@ public interface SystemStatusProvider {
     long getTotalJVMMemory();
     String getJreVersion();
     String getTempLocation();
-    String getBasicServerStatus();
+
 }

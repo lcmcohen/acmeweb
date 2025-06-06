@@ -2,7 +2,7 @@ package com.acme.statusmgr;
 
 import com.acme.statusmgr.details.AvailableProcessorsDetail;
 import com.acme.statusmgr.details.BaseServerStatus;
-
+/*
 public class StatusTester {
     public static void main(String[] args) throws InterruptedException {
         StatusDetail status = new AvailableProcessorsDetail(new BaseServerStatus());
@@ -15,5 +15,5 @@ public class StatusTester {
         System.out.println(status.getStatusDesc()); // should be same format, fresh value
         System.out.println("Cost: " + status.getRequestCost());
     }
-}
+}*/
 

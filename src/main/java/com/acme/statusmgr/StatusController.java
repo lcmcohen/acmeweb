@@ -1,8 +1,7 @@
 package com.acme.statusmgr;
 
 import com.acme.statusmgr.beans.ServerStatus;
-import com.acme.statusmgr.details.AvailableProcessorsDetail;
-import com.acme.statusmgr.details.BaseServerStatus;
+import com.acme.statusmgr.details.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -65,18 +66,32 @@ public class StatusController {
         logger.info("Details were provided: " + Arrays.toString(details.toArray()));
 
 
-        SystemStatusProvider facade = new SystemStatusFacade();
-        AvailableProcessorsDetail.setProvider(facade);
+
+
         StatusDetail status = new BaseServerStatus();
 
 
+        Set<String> addedDetails = new HashSet<>();
         for (String detail : details) {
+            boolean isRepeated = !addedDetails.add(detail);
             switch (detail) {
                 case "availableProcessors":
-                    status = new AvailableProcessorsDetail(status);
+                    status = new AvailableProcessorsDetail(status, isRepeated);
+                    break;
+                case "freeJVMMemory":
+                    status = new FreeJVMMemoryDetail(status, isRepeated);
+                    break;
+                case "totalJVMMemory":
+                    status = new TotalJVMMemoryDetail(status, isRepeated);
+                    break;
+                case "jreVersion":
+                    status = new JreVersionDetail(status, isRepeated);
+                    break;
+                case "tempLocation":
+                    status = new TempLocationDetail(status, isRepeated);
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid detail: " + detail);
+                    throw new IllegalArgumentException("Invalid details option: " + detail);
             }
         }
 
