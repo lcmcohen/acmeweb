@@ -67,7 +67,7 @@ public class StatusController {
 
 
 
-
+        /*
         StatusDetail status = new BaseServerStatus();
 
 
@@ -94,6 +94,8 @@ public class StatusController {
                     throw new IllegalArgumentException("Invalid details option: " + detail);
             }
         }
+        */
+        StatusDetail status = ServerStatusFactory.buildStatusDetailChain(details);
 
 
         return new ServerStatus(
