@@ -23,6 +23,7 @@ public class ServerStatus {
     public ServerStatus(long id, String contentHeader) {
         this.id = id;
         this.contentHeader = contentHeader;
+        System.out.println((" ******* DEBUG   constructor got called *&^*&^*^(*^*^$^&$^%^* "));
     }
 
     public ServerStatus() {
@@ -66,4 +67,13 @@ public class ServerStatus {
         return requestCost;
     }
 
+
+    /**
+     * Set the id of the request - although could be set via constructor,
+     * need to override if using @Cacheable
+     * @param id unique identifier of request/result
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
 }

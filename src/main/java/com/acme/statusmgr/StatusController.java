@@ -1,8 +1,10 @@
 package com.acme.statusmgr;
 
 import com.acme.statusmgr.beans.ServerStatus;
+import com.acme.statusmgr.beans.ServerStatusCachable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +48,10 @@ public class StatusController {
     }
 
 
+
+    @Autowired
+    private ServerStatusCachable statusService; // cached service for getting status objs
+
     /**
      * Process a request for detailed server status information
      *
@@ -66,6 +72,11 @@ public class StatusController {
             logger.info("Details were provided: " + Arrays.toString(details.toArray()));
 
             //todo Should do something with all these details that were requested
+
+            // for purpose of demo with cacheable ignore reqs for 'detailed' but
+            // use 'details's as one of the getter method parms to identify 'similar' status objects
+            detailedStatus = statusService.getCachedStatus(-1,
+                    String.format(template, name) + "details: " + Arrays.toString(details.toArray()));
 
 
         }
