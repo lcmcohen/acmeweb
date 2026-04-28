@@ -15,8 +15,10 @@
  */
 package com.acme.statusmgr;
 
+import com.acme.statusmgr.beans.ServerStatusDecorator;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,7 +47,15 @@ public class StatusControllerDetailedTest {
     @BeforeAll
     public static void beforeAll() {
        //todo StatusController.setSystemInfoFacade(null /* todo: Inject appropriate object */);
+        ServerStatusDecorator.setFacade(new MockServerStatusFacade());
     }
+
+//    @BeforeEach
+//    public void setUp() {
+//        // this is dependency injection
+//        // the decorators use the mock for the run
+//        ServerStatusDecorator.setFacade(new MockServerStatusFacade());
+//    }
 
 
     /**

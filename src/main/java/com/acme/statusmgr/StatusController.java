@@ -1,6 +1,7 @@
 package com.acme.statusmgr;
 
 import com.acme.statusmgr.beans.ServerStatus;
+import com.acme.statusmgr.beans.ServerStatusDecorator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,14 @@ public class StatusController {
 
     protected static final String template = "Server Status requested by %s";
     protected final AtomicLong counter = new AtomicLong();
+
+    /**
+     * Constructor for StatusController.
+     * This is the perfect place to set the "Real" facade for production.
+     */
+    public StatusController() {
+        ServerStatusDecorator.setFacade(new com.acme.statusmgr.beans.ServerStatusFacade());
+    }
 
     /**
      * Process a request for server status information

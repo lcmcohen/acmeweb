@@ -5,6 +5,7 @@ public abstract class ServerStatusDecorator extends BaseServerStatus {
 
     private static IServerStatusFacade facade = new ServerStatusFacade();
 
+
     public static void setFacade(IServerStatusFacade newFacade) {
         facade = newFacade;
     }
