@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.acme.statusmgr.beans.BaseServerStatus;
+import com.acme.statusmgr.beans.AvailableProcessorsDecorator;
+
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -55,20 +61,28 @@ public class StatusController {
      *      * @apiNote TODO since Spring picks apart the object returned with Reflection and doesn't care what the return-object's type is, we can change the type of object we return if necessary
      */
     @RequestMapping("/status/detailed")
-    public ServerStatus getDetailedStatus(
+    public BaseServerStatus getDetailedStatus(
             @RequestParam(value = "name", defaultValue = "Anonymous") String name,
             @RequestParam List<String> details) {
 
-        ServerStatus detailedStatus = null;
+
+        BaseServerStatus detailedStatus = new ServerStatus(counter.incrementAndGet(), String.format(template, name));
 
         if (details != null) {
-            Logger logger = LoggerFactory.getLogger("StatusController");
-            logger.info("Details were provided: " + Arrays.toString(details.toArray()));
+            for (String detail : details) {
+                if ("availableProcessors".equals(detail)) {
+                    detailedStatus = new AvailableProcessorsDecorator(detailedStatus);
+                }
+                else {
 
-            //todo Should do something with all these details that were requested
-
-
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid details option: " + detail);
+                }
+            }
         }
-        return detailedStatus; //todo shouldn't just return null
+
+        LoggerFactory.getLogger(StatusController.class)
+                .info("Final request cost: " + detailedStatus.getRequestCost());
+
+        return detailedStatus;
     }
 }
