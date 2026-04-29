@@ -1,15 +1,11 @@
 package com.acme.statusmgr;
 
-import com.acme.statusmgr.beans.ServerStatus;
-import com.acme.statusmgr.beans.ServerStatusDecorator;
+import com.acme.statusmgr.beans.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.acme.statusmgr.beans.BaseServerStatus;
-import com.acme.statusmgr.beans.AvailableProcessorsDecorator;
 
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -81,9 +77,15 @@ public class StatusController {
             for (String detail : details) {
                 if ("availableProcessors".equals(detail)) {
                     detailedStatus = new AvailableProcessorsDecorator(detailedStatus);
-                }
-                else {
-
+                } else if ("freeJVMMemory".equals(detail)) {
+                    detailedStatus = new FreeJVMMemoryDecorator(detailedStatus);
+                } else if ("totalJVMMemory".equals(detail)) {
+                    detailedStatus = new TotalJVMMemoryDecorator(detailedStatus);
+                } else if ("jreVersion".equals(detail)) {
+                    detailedStatus = new JreVersionDecorator(detailedStatus);
+                } else if ("tempLocation".equals(detail)) {
+                    detailedStatus = new TempLocationDecorator(detailedStatus);
+                } else {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid details option: " + detail);
                 }
             }
