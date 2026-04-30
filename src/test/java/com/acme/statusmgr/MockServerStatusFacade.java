@@ -20,7 +20,7 @@ public class MockServerStatusFacade implements IServerStatusFacade {
     public String getJreVersion() { return "15.0.2+7-27"; }
 
     @Override
-    public String getTempLocation() { return "M:\\AppData\\Local\\Temp"; }
+    public String getTempLocation() { return "M:\\\\AppData\\\\Local\\\\Temp"; }
 
     @Override
     public String getServerStatus() { return "up"; }
