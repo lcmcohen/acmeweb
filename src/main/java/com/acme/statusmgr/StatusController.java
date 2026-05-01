@@ -35,6 +35,8 @@ public class StatusController {
     protected static final String template = "Server Status requested by %s";
     protected final AtomicLong counter = new AtomicLong();
 
+    private final Logger logger = LoggerFactory.getLogger(StatusController.class);
+
     /**
      * Constructor for StatusController.
      * This is the perfect place to set the "Real" facade for production.
@@ -70,6 +72,7 @@ public class StatusController {
             @RequestParam(value = "name", defaultValue = "Anonymous") String name,
             @RequestParam List<String> details) {
 
+        logger.info("Processing detailed status request for details: " + details);
 
         BaseServerStatus detailedStatus = new ServerStatus(counter.incrementAndGet(), String.format(template, name));
 
@@ -86,13 +89,13 @@ public class StatusController {
                 } else if ("tempLocation".equals(detail)) {
                     detailedStatus = new TempLocationDecorator(detailedStatus);
                 } else {
+                    logger.error("Invalid detail requested: " + detail);
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid details option: " + detail);
                 }
             }
         }
 
-        LoggerFactory.getLogger(StatusController.class)
-                .info("Final request cost: " + detailedStatus.getRequestCost());
+        logger.info("Final request cost: " + detailedStatus.getRequestCost());
 
         return detailedStatus;
     }
