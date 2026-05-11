@@ -15,11 +15,13 @@
  */
 package com.acme.statusmgr;
 
+import com.acme.statusmgr.beans.ServerStatusDecorator;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -45,6 +47,14 @@ public class StatusControllerDetailedTest {
     @BeforeAll
     public static void beforeAll() {
        //todo StatusController.setSystemInfoFacade(null /* todo: Inject appropriate object */);
+        ServerStatusDecorator.setFacade(new MockServerStatusFacade());
+    }
+
+    @BeforeEach
+    public void setUp() {
+        // this is dependency injection
+        // the decorators use the mock for the run
+        ServerStatusDecorator.setFacade(new MockServerStatusFacade());
     }
 
 
@@ -153,7 +163,7 @@ public class StatusControllerDetailedTest {
         this.mockMvc.perform(get("/server/status/detailed?name=Yankel"))
                 .andDo(print()).andExpect(status().isBadRequest())
                 .andExpect(status().reason(Matchers.is(
-                        "Required request parameter 'details' for method parameter type List is not present")));
+                "Required parameter 'details' is not present.")));
 
     }
 

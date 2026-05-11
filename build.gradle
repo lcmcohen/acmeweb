@@ -1,13 +1,15 @@
 plugins {
-    id "java"
-    id 'org.springframework.boot' version '4.0.0'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
 }
 
-apply plugin: 'io.spring.dependency-management'
+group = 'com.acme'
+version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion = JavaLanguageVersion.of(21) // Changed from 25 to 21
     }
 }
 
@@ -16,13 +18,11 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")    // web communication
-    implementation('org.springframework.boot:spring-boot-starter-test')   // unit tests
-    implementation('org.springframework.boot:spring-boot-starter-webmvc-test') // MVC unit tests
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // 'spring-boot-starter-test' usually includes everything you need for MVC tests
 }
 
 test {
     useJUnitPlatform()
 }
-
-

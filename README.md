@@ -59,3 +59,18 @@ If the server has started properly you should see a number of logging statements
 
 You can then make requests via a browser or curl following the above URL syntax.
 
+--> NEW: Detailed Server Status
+I have added a new endpoint that allows for dynamic, 
+detailed status reporting using the Decorator, Facade, and Strategy design patterns.
+Syntax for Detailed Requests:
+Starts with /server/status/detailed
+Required parameter: details (a comma-separated list of status items)
+Optional parameter: name (the requester's name)
+Available Details and Costs:
+Detail Key,             Description,                                Cost(Pennies),
+availableProcessors,    Number of processors available to the JVM,  3, 
+freeJVMMemory,          Current free memory in the JVM,             7, 
+totalJVMMemory,         Total memory available to the JVM,          13, 
+jreVersion,             The version of the JRE being used,          19, 
+tempLocation,           The server's temporary file location,       29
+

@@ -1,11 +1,14 @@
 package com.acme.statusmgr;
 
-import com.acme.statusmgr.beans.ServerStatus;
+import com.acme.statusmgr.beans.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +35,16 @@ public class StatusController {
     protected static final String template = "Server Status requested by %s";
     protected final AtomicLong counter = new AtomicLong();
 
+    private final Logger logger = LoggerFactory.getLogger(StatusController.class);
+
+    /**
+     * Constructor for StatusController.
+     * This is the perfect place to set the "Real" facade for production.
+     */
+    public StatusController() {
+        ServerStatusDecorator.setFacade(new com.acme.statusmgr.beans.ServerStatusFacade());
+    }
+
     /**
      * Process a request for server status information
      *
@@ -55,20 +68,35 @@ public class StatusController {
      *      * @apiNote TODO since Spring picks apart the object returned with Reflection and doesn't care what the return-object's type is, we can change the type of object we return if necessary
      */
     @RequestMapping("/status/detailed")
-    public ServerStatus getDetailedStatus(
+    public BaseServerStatus getDetailedStatus(
             @RequestParam(value = "name", defaultValue = "Anonymous") String name,
             @RequestParam List<String> details) {
 
-        ServerStatus detailedStatus = null;
+        logger.info("Processing detailed status request for details: " + details);
+
+        BaseServerStatus detailedStatus = new ServerStatus(counter.incrementAndGet(), String.format(template, name));
 
         if (details != null) {
-            Logger logger = LoggerFactory.getLogger("StatusController");
-            logger.info("Details were provided: " + Arrays.toString(details.toArray()));
-
-            //todo Should do something with all these details that were requested
-
-
+            for (String detail : details) {
+                if ("availableProcessors".equals(detail)) {
+                    detailedStatus = new AvailableProcessorsDecorator(detailedStatus);
+                } else if ("freeJVMMemory".equals(detail)) {
+                    detailedStatus = new FreeJVMMemoryDecorator(detailedStatus);
+                } else if ("totalJVMMemory".equals(detail)) {
+                    detailedStatus = new TotalJVMMemoryDecorator(detailedStatus);
+                } else if ("jreVersion".equals(detail)) {
+                    detailedStatus = new JreVersionDecorator(detailedStatus);
+                } else if ("tempLocation".equals(detail)) {
+                    detailedStatus = new TempLocationDecorator(detailedStatus);
+                } else {
+                    logger.error("Invalid detail requested: " + detail);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid details option: " + detail);
+                }
+            }
         }
-        return detailedStatus; //todo shouldn't just return null
+
+        logger.info("Final request cost: " + detailedStatus.getRequestCost());
+
+        return detailedStatus;
     }
 }
